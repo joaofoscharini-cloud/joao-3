@@ -1,21 +1,22 @@
 <!DOCTYPE html>
-<html lang="pt">
+<html lang="pt-BR">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Central de Resenhas de Filmes, Games e Músicas">
   <title>Central de Resenhas 🎬🎮🎵</title>
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
 
-  <header>
+  <header class="main-header">
     <h1>Central de Resenhas 🍿🎮🎧</h1>
     <p>Guarde as suas opiniões e descubra os seus conteúdos favoritos</p>
   </header>
 
   <div class="container">
-    <section class="form-container">
-      <h2>+ Adicionar Resenha</h2>
+    <section class="form-container" aria-labelledby="form-heading">
+      <h2 id="form-heading">+ Adicionar Resenha</h2>
       <form id="reviewForm">
         <div class="form-group">
           <label for="title">Título</label>
@@ -25,9 +26,9 @@
         <div class="form-group">
           <label for="category">Categoria</label>
           <select id="category" required>
-            <option value="filme">Filme</option>
-            <option value="game">Game</option>
-            <option value="musica">Música</option>
+            <option value="filme">🎬 Filme</option>
+            <option value="game">🎮 Game</option>
+            <option value="musica">🎵 Música</option>
           </select>
         </div>
 
@@ -43,8 +44,13 @@
         </div>
 
         <div class="form-group">
+          <label for="imageUrl">URL da Capa/Pôster (Opcional)</label>
+          <input type="url" id="imageUrl" placeholder="https://exemplo.com/imagem.jpg">
+        </div>
+
+        <div class="form-group">
           <label for="tag">Tag Especial</label>
-          <input type="text" id="tag" placeholder="Ex: Para passar o tempo, Final incrível...">
+          <input type="text" id="tag" placeholder="Ex: Final incrível, Para relaxar...">
         </div>
 
         <div class="form-group">
@@ -57,15 +63,21 @@
     </section>
 
     <main>
-      <div class="filter-bar">
-        <button class="filter-btn active" data-category="todos">Todos</button>
-        <button class="filter-btn" data-category="filme">🎬 Filmes</button>
-        <button class="filter-btn" data-category="game">🎮 Games</button>
-        <button class="filter-btn" data-category="musica">🎵 Músicas</button>
-      </div>
+      <section class="controls-section">
+        <search class="search-box">
+          <input type="search" id="searchInput" placeholder="🔍 Pesquisar por título ou tag..." aria-label="Pesquisar resenhas">
+        </search>
 
-      <div class="cards-grid" id="cardsGrid">
-        </div>
+        <nav class="filter-bar" aria-label="Filtro de categoria">
+          <button class="filter-btn active" data-category="todos" aria-pressed="true">Todos</button>
+          <button class="filter-btn" data-category="filme" aria-pressed="false">🎬 Filmes</button>
+          <button class="filter-btn" data-category="game" aria-pressed="false">🎮 Games</button>
+          <button class="filter-btn" data-category="musica" aria-pressed="false">🎵 Músicas</button>
+        </nav>
+      </section>
+
+      <section class="cards-grid" id="cardsGrid" aria-live="polite" aria-label="Lista de resenhas">
+        </section>
     </main>
   </div>
 
