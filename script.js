@@ -1,10 +1,11 @@
-// Dados Iniciais
-let reviews = [
+// Dados iniciais padrão
+const defaultReviews = [
   {
     id: 1,
     title: "Interstellar",
     category: "filme",
     rating: 5,
+    imageUrl: "https://images.unsplash.com/photo-1534447677768-be436bb09401?w=500&q=80",
     tag: "Finais surpreendentes",
     review: "Uma obra-prima da ficção científica. Trilha sonora e visual espetaculares."
   },
@@ -13,88 +14,40 @@ let reviews = [
     title: "Stardew Valley",
     category: "game",
     rating: 5,
-    tag: "Jogos para passar o tempo",
+    imageUrl: "",
+    tag: "Para passar o tempo",
     review: "Extremamente relaxante. Perfeito para jogar ouvindo um podcast no final de semana."
-  },
-  {
-    id: 3,
-    title: "Random Access Memories",
-    category: "musica",
-    rating: 4,
-    tag: "Para ouvir treinando",
-    review: "Álbum incrível do Daft Punk. A produção de áudio é simplesmente impecável."
   }
 ];
 
+// Carrega os dados salvos no localStorage ou usa os padrão
+let reviews = JSON.parse(localStorage.getItem('my_reviews')) || defaultReviews;
 let currentFilter = 'todos';
+let searchQuery = '';
 
-// Função para renderizar os cards na tela
+// Função para salvar no LocalStorage
+function saveToLocalStorage() {
+  localStorage.setItem('my_reviews', JSON.stringify(reviews));
+}
+
+// Renderiza a lista na tela
 function renderReviews() {
   const grid = document.getElementById('cardsGrid');
   grid.innerHTML = '';
 
-  const filteredReviews = currentFilter === 'todos' 
-    ? reviews 
-    : reviews.filter(item => item.category === currentFilter);
+  // Filtra por Categoria e por Busca de texto
+  const filtered = reviews.filter(item => {
+    const matchesCategory = currentFilter === 'todos' || item.category === currentFilter;
+    const matchesSearch = item.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
+                          item.tag.toLowerCase().includes(searchQuery.toLowerCase());
+    return matchesCategory && matchesSearch;
+  });
 
-  if (filteredReviews.length === 0) {
-    grid.innerHTML = '<p style="color: var(--text-muted);">Nenhuma resenha cadastrada nesta categoria.</p>';
+  if (filtered.length === 0) {
+    grid.innerHTML = '<p style="color: var(--text-muted); grid-column: 1/-1;">Nenhuma resenha encontrada.</p>';
     return;
   }
 
-  filteredReviews.forEach(item => {
-    const card = document.createElement('div');
+  filtered.forEach(item => {
+    const card = document.createElement('article');
     card.className = 'card';
-    card.innerHTML = `
-      <div>
-        <div class="card-header">
-          <span class="badge badge-${item.category}">${item.category}</span>
-          <span class="rating">${'★'.repeat(item.rating)}${'☆'.repeat(5 - item.rating)}</span>
-        </div>
-        <h3 class="card-title">${item.title}</h3>
-        <p class="card-body">"${item.review}"</p>
-      </div>
-      ${item.tag ? `<div class="card-tag"># ${item.tag}</div>` : ''}
-    `;
-    grid.appendChild(card);
-  });
-}
-
-// Evento para os botões de filtro
-document.querySelectorAll('.filter-btn').forEach(button => {
-  button.addEventListener('click', () => {
-    currentFilter = button.getAttribute('data-category');
-
-    // Atualiza o estado ativo dos botões
-    document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
-    button.classList.add('active');
-
-    renderReviews();
-  });
-});
-
-// Evento de envio do formulário
-document.getElementById('reviewForm').addEventListener('submit', function(e) {
-  e.preventDefault();
-
-  const newReview = {
-    id: Date.now(),
-    title: document.getElementById('title').value,
-    category: document.getElementById('category').value,
-    rating: parseInt(document.getElementById('rating').value),
-    tag: document.getElementById('tag').value,
-    review: document.getElementById('review').value
-  };
-
-  // Adiciona a nova resenha ao início do array
-  reviews.unshift(newReview);
-
-  // Limpa o formulário
-  this.reset();
-
-  // Atualiza a exibição
-  renderReviews();
-});
-
-// Renderização inicial ao carregar a página
-renderReviews();
