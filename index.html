@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Central de Resenhas 🎬🎮🎵</title>
+  <style>
+    /* --- ESTILOS CSS --- */
+    :root {
+      --bg-color: #0f172a;
+      --card-bg: #1e293b;
+      --accent-color: #8b5cf6;
+      --accent-hover: #7c3aed;
+      --text-main: #f8fafc;
+      --text-muted: #94a3b8;
+      --border-color: #334155;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    body {
+      background-color: var(--bg-color);
+      color: var(--text-main);
+      padding: 20px;
+      max-width: 1100px;
+      margin: 0 auto;
+    }
+
+    header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    header h1 {
+      font-size: 2.5rem;
+      margin-bottom: 8px;
+    }
+
+    header p {
+      color: var(--text-muted);
+    }
+
+    /* Layout Principal */
+    .container {
+      display: grid;
+      grid-template-columns: 320px 1fr;
+      gap: 30px;
+    }
+
+    @media (max-width: 768px) {
+      .container {
+        grid-template-columns: 1fr;
+      }
+    }
+
+    /* Formulário */
+    .form-container {
+      background-color: var(--card-bg);
+      padding: 20px;
+      border-radius: 12px;
+      border: 1px solid var(--border-color);
+      height: fit-content;
+    }
+
+    .form-container h2 {
+      font-size: 1.2rem;
+      margin-bottom: 15px;
+      color: var(--accent-color);
+    }
+
+    .form-group {
+      margin-bottom: 15px;
+    }
+
+    .form-group label {
+      display: block;
+      margin-bottom: 5px;
+      font-size: 0.9rem;
+      color: var(--text-muted);
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 10px;
+      background-color: var(--bg-color);
+      border: 1px solid var(--border-color);
+      border-radius: 6px;
+      color: var(--text-main);
+      font-size: 0.95rem;
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    button.btn-submit {
+      width: 100%;
+      padding: 12px;
+      background-color: var(--accent-color);
+      color: white;
+      border: none;
+      border-radius: 6px;
+      font-weight: bold;
+      cursor: pointer;
+      transition: background 0.2s;
+    }
+
+    button.btn-submit:hover {
+      background-color: var(--accent-hover);
+    }
+
+    /* Filtros */
+    .filter-bar {
+      display: flex;
+      gap: 10px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+
+    .filter-btn {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      color: var(--text-main);
+      padding: 8px 16px;
+      border-radius: 20px;
+      cursor: pointer;
+      font-size: 0.9rem;
+      transition: all 0.2s;
+    }
+
+    .filter-btn.active,
+    .filter-btn:hover {
+      background-color: var(--accent-color);
+      border-color: var(--accent-color);
+    }
+
+    /* Grid de Cards */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 20px;
+    }
+
+    .card {
+      background-color: var(--card-bg);
+      border: 1px solid var(--border-color);
+      border-radius: 12px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+      transition: transform 0.2s;
+    }
+
+    .card:hover {
+      transform: translateY(-4px);
+    }
+
+    .card-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .badge {
+      font-size: 0.75rem;
+      padding: 4px 8px;
+      border-radius: 12px;
+      font-weight: bold;
+      text-transform: uppercase;
+    }
+
+    .badge-filme { background-color: #ef4444; color: white; }
+    .badge-game { background-color: #3b82f6; color: white; }
+    .badge-musica { background-color: #10b981; color: white; }
+
+    .rating {
+      color: #f59e0b;
+      font-weight: bold;
+    }
+
+    .card-title {
+      font-size: 1.1rem;
+      margin-bottom: 8px;
+    }
+
+    .card-body {
+      font-size: 0.9rem;
+      color: var(--text-muted);
+      line-height: 1.4;
+      margin-bottom: 12px;
+    }
+
+    .card-tag {
+      font-size: 0.8rem;
+      color: var(--accent-color);
+      font-style: italic;
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <h1>Central de Resenhas 🍿🎮🎧</h1>
+    <p>Guarde suas opiniões e descubra seus conteúdos favoritos</p>
+  </header>
+
+  <div class="container">
+    <section class="form-container">
+      <h2>+ Adicionar Resenha</h2>
+      <form id="reviewForm">
+        <div class="form-group">
+          <label for="title">Título</label>
+          <input type="text" id="title" placeholder="Ex: Interstellar, Chrono Trigger..." required>
+        </div>
+
+        <div class="form-group">
+          <label for="category">Categoria</label>
+          <select id="category" required>
+            <option value="filme">Filme</option>
+            <option value="game">Game</option>
+            <option value="musica">Música</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="rating">Nota (1 a 5 ⭐)</label>
+          <select id="rating" required>
+            <option value="5">⭐⭐⭐⭐⭐ (5/5)</option>
+            <option value="4">⭐⭐⭐⭐ (4/5)</option>
+            <option value="3">⭐⭐⭐ (3/5)</option>
+            <option value="2">⭐⭐ (2/5)</option>
+            <option value="1">⭐ (1/5)</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label for="tag">Tag Especial</label>
+          <input type="text" id="tag" placeholder="Ex: Para passar o tempo, Final incrível...">
+        </div>
+
+        <div class="form-group">
+          <label for="review">Sua Opinião</label>
+          <textarea id="review" placeholder="Escreva um breve comentário..." required></textarea>
+        </div>
+
+        <button type="submit" class="btn-submit">Publicar Resenha</button>
+      </form>
+    </section>
+
+    <main>
+      <div class="filter-bar">
+        <button class="filter-btn active" onclick="filterCategory('todos', this)">Todos</button>
+        <button class="filter-btn" onclick="filterCategory('filme', this)">🎬 Filmes</button>
+        <button class="filter-btn" onclick="filterCategory('game', this)">🎮 Games</button>
+        <button class="filter-btn" onclick="filterCategory('musica', this)">🎵 Músicas</button>
+      </div>
+
+      <div class="cards-grid" id="cardsGrid">
+        </div>
+    </main>
+  </div>
+
+  <script>
+    /* --- LÓGICA JAVASCRIPT --- */
+
+    // Dados Iniciais (Exemplo)
+    let reviews = [
+      {
+        id: 1,
+        title: "Interstellar",
+        category: "filme",
+        rating: 5,
+        tag: "Finais surpreendentes",
+        review: "Uma obra-prima da ficção científica. Trilha sonora e visual espetaculares."
+      },
+      {
+        id: 2,
+        title: "Stardew Valley",
+        category: "game",
+        rating: 5,
+        tag: "Jogos para passar o tempo",
+        review: "Extremamente relaxante. Perfeito para jogar ouvindo um podcast no final de semana."
+      },
+      {
+        id: 3,
+        title: "Random Access Memories",
+        category: "musica",
+        rating: 4,
+        tag: "Para ouvir treinando",
+        review: "Álbum incrível do Daft Punk. A produção de áudio é simplesmente impecável."
+      }
+    ];
+
+    let currentFilter = 'todos';
+
+    // Função para renderizar os cards na tela
+    function renderReviews() {
+      const grid = document.getElementById('cardsGrid');
+      grid.innerHTML = '';
+
+      const filteredReviews = currentFilter === 'todos' 
+        ? reviews 
+        : reviews.filter(item => item.category === currentFilter);
+
+      if (filteredReviews.length === 0) {
+        grid.innerHTML = '<p style="color: var(--text-muted);">Nenhuma resenha cadastrada nesta categoria.</p>';
+        return;
+      }
+
+      filteredReviews.forEach(item => {
+        const card = document.createElement('div');
+        card.className = 'card';
+        card.innerHTML = `
+          <div>
+            <div class="card-header">
+              <span class="badge badge-${item.category}">${item.category}</span>
+              <span class="rating">${'★'.repeat(item.rating)}${'☆'.repeat(5 - item.rating)}</span>
+            </div>
+            <h3 class="card-title">${item.title}</h3>
+            <p class="card-body">"${item.review}"</p>
+          </div>
+          ${item.tag ? `<div class="card-tag"># ${item.tag}</div>` : ''}
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    // Função para filtrar categorias
+    function filterCategory(category, button) {
+      currentFilter = category;
+      
+      // Atualiza visual do botão ativo
+      document.querySelectorAll('.filter-btn').forEach(btn => btn.classList.remove('active'));
+      button.classList.add('active');
+
+      renderReviews();
+    }
+
+    // Evento de envio do Formulário
+    document.getElementById('reviewForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+
+      const newReview = {
+        id: Date.now(),
+        title: document.getElementById('title').value,
+        category: document.getElementById('category').value,
+        rating: parseInt(document.getElementById('rating').value),
+        tag: document.getElementById('tag').value,
+        review: document.getElementById('review').value
+      };
+
+      // Adiciona no início da lista
+      reviews.unshift(newReview);
+
+      // Reseta o formulário
+      this.reset();
+
+      // Atualiza a tela
+      renderReviews();
+    });
+
+    // Renderiza ao carregar a página
+    renderReviews();
+  </script>
+</body>
+</html>
